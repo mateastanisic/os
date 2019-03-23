@@ -1,0 +1,1 @@
+LAB0=2 LAB1= LAB2= LAB3= LAB4= LAB=2 blic1=1,5 blic2= blic3= blic4= blic5= BLIC=1,5 1KZ= 2KZ= UK=3,5 OCJ=
