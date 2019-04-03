@@ -14,7 +14,7 @@
 typedef unsigned long long int ulli;
 
 
-bool first_time = true; 
+bool first_time = true, first_check = true; 
 /*jer se static varijabla u c-u ne može inicijalizirati s nekom ne-konstantnom vrijednošću
 pa nam treba info generiramo li prvi puta neki random broj ( rnd = time(NULL) ) ili ne 
 ( rnd = ( rnd*A )%B )*/
@@ -142,8 +142,9 @@ const char* provjera_zahtjeva() {
 	double t2 = t;
 
 	t = dsecnd();
-	if( ( t - t2 ) < 1 ) {
+	if( ( t - t2 ) < 1 || first_check ) {
 		//nije prošla bar 1s od zadnje provjere zahtjeva
+		first_check = false;
 		return "NIJE_KRAJ";
 	}
 	else {
