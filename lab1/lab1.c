@@ -55,7 +55,7 @@ int main() {
 		int limit = 100; //koliko puta ćemo dodavati 2
 
 		while ( test_bitovi(x) == false || test_pseudo_prost(x) == false ) {
-			if( x <= (NAJVECI_BROJ - 2) && br < limit ) {
+			if( x <= (NAJVECI_BROJ - 2ULL) && br < limit ) {
 				x = x + 2ULL;
 				br++;
 			}
@@ -72,7 +72,7 @@ int main() {
 			br = 0;
 			//opet ista stvar, samo ovdje ne gledamo uvjet test_bitovi(x)
 			while ( test_pseudo_prost(x) == false ) {
-				if ( x <= (NAJVECI_BROJ - 2) && br < limit ) {
+				if ( x <= (NAJVECI_BROJ - 2ULL) && br < limit ) {
 					x = x + 2ULL;
 					br++;
 				}
