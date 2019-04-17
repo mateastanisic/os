@@ -15,12 +15,16 @@
 
 typedef unsigned long long int ulli;
 
+struct dretva_id{
+    unsigned int id;
+};
+
 bool first_time = true;
 /*jer se static varijabla u c-u ne može inicijalizirati s nekom ne-konstantnom vrijednošću
 pa nam treba info generiramo li prvi puta neki random broj ( rnd = time(NULL) ) ili ne
 ( rnd = ( rnd*A )%B )*/
 ulli rnd; //static varijabla
-ulli MS[5]; //međuspremnik
+ulli MS[] = {0, 0, 0, 0, 0}; //međuspremnik
 int U = 0; //izlaz index, ulaz index inicijalizirani na 0
 char* kraj = "NIJE_KRAJ";
 
@@ -50,12 +54,14 @@ ulli generiraj_broj();
 int main( void ) {
     srand( time( NULL ) );
     pthread_t thr_id[10]; //dretve
-    int BR[10];
+
+    struct dretva_id *ids;
 
     //radne dretve
     for( int i=0; i<5; i++ ) {
-        BR[i] = i;
-        if (pthread_create(&thr_id[i], NULL, radna_dretva, &BR[i]) != 0) {
+        ids = malloc( sizeof(struct dretva_id) );
+        (*ids).id = i;
+        if (pthread_create(&thr_id[i], NULL, radna_dretva, (void*)ids) != 0) {
             printf ("Greska pri stvaranju dretve!\n");
             exit (1);
         }
@@ -64,8 +70,9 @@ int main( void ) {
 
     //dretve provjere
     for( int i=5; i<10; i++ ) {
-        BR[i] = i-5;
-        if (pthread_create (&thr_id[i], NULL, dretva_provjera, &BR[i]) != 0) {
+        ids = malloc( sizeof(struct dretva_id) );
+        (*ids).id = i-5;
+        if (pthread_create (&thr_id[i], NULL, dretva_provjera, (void*)ids) != 0) {
             printf ("Greska pri stvaranju dretve!\n");
             exit (1);
         }
@@ -131,33 +138,36 @@ void izadi_iz_KO( int I ) {
 }
 
 void *radna_dretva( void *id ) {
-    int *n = id;
+    struct dretva_id *n = (struct dretva_id*)id;
 
     do {
         ulli x = generiraj_broj();
-        udi_u_KO( *n );
+
+        udi_u_KO( (*n).id );
         MS[U] = x;
         U = ( U + 1 ) % 5;
-        izadi_iz_KO( *n );
+        izadi_iz_KO( (*n).id );
 
     } while( strcmp(kraj,"KRAJ_RADA") );
 
+    free( id );
     return NULL;
 }
 
 void *dretva_provjera( void *id ) {
-    int *n = id;
+    struct dretva_id *n = (struct dretva_id*)id;
 
     do {
-        udi_u_KO( *n );
+        udi_u_KO( (*n).id );
         ulli y = MS[0];
-        printf("ID dretve: %d, dohvatio broj: %llu \n", *n, y );
-        izadi_iz_KO( *n );
+        printf("ID dretve: %d, dohvatio broj: %llu \n", (*n).id, y );
+        izadi_iz_KO( (*n).id );
         sleep( y%5 );
-        printf("ID dretve: %d, potrosio broj: %llu \n", *n, y );
+        printf("ID dretve: %d, potrosio broj: %llu \n", (*n).id, y );
 
     } while( strcmp(kraj,"KRAJ_RADA") );
 
+    free( id );
     return NULL;
 }
 
